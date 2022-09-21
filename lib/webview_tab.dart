@@ -313,7 +313,8 @@ class WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
 
         return NavigationActionPolicy.ALLOW;
       },
-      onDownloadStart: (controller, url) async {
+      onDownloadStartRequest: (controller, downloadStartRequest) async {
+        Uri url = downloadStartRequest.url;
         String path = url.path;
         String fileName = path.substring(path.lastIndexOf('/') + 1);
 
@@ -381,7 +382,7 @@ class WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
       <p>$message</p>
     </div>
 </body>
-    """, baseUrl: errorUrl, androidHistoryUrl: errorUrl);
+    """, baseUrl: errorUrl, historyUrl: errorUrl);
 
         widget.webViewModel.url = url;
         widget.webViewModel.isSecure = false;

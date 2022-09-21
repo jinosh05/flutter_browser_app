@@ -986,7 +986,6 @@ class _AndroidSettingsState extends State<AndroidSettings> {
                             browserModel.save();
                             setState(() {});
                           },
-                          showLabel: true,
                           pickerAreaHeightPercent: 0.8,
                         ),
                       ),
@@ -1027,7 +1026,6 @@ class _AndroidSettingsState extends State<AndroidSettings> {
                             browserModel.save();
                             setState(() {});
                           },
-                          showLabel: true,
                           pickerAreaHeightPercent: 0.8,
                         ),
                       ),
@@ -1069,7 +1067,6 @@ class _AndroidSettingsState extends State<AndroidSettings> {
                             browserModel.save();
                             setState(() {});
                           },
-                          showLabel: true,
                           pickerAreaHeightPercent: 0.8,
                         ),
                       ),
@@ -1111,7 +1108,6 @@ class _AndroidSettingsState extends State<AndroidSettings> {
                             browserModel.save();
                             setState(() {});
                           },
-                          showLabel: true,
                           pickerAreaHeightPercent: 0.8,
                         ),
                       ),
