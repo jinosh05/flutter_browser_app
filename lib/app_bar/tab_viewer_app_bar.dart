@@ -1,10 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_browser/models/browser_model.dart';
 import 'package:flutter_browser/models/webview_model.dart';
 import 'package:flutter_browser/pages/settings/main.dart';
 import 'package:flutter_browser/webview_tab.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_icons_null_safety/flutter_icons_null_safety.dart';
 import 'package:provider/provider.dart';
 
 import '../custom_popup_menu_item.dart';
@@ -23,7 +22,6 @@ class TabViewerAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _TabViewerAppBarState extends State<TabViewerAppBar> {
-
   GlobalKey tabInkWellKey = new GlobalKey();
 
   @override
@@ -61,9 +59,9 @@ class _TabViewerAppBarState extends State<TabViewerAppBar> {
         child: Padding(
           padding: settings.homePageEnabled
               ? EdgeInsets.only(
-              left: 20.0, top: 15.0, right: 10.0, bottom: 15.0)
+                  left: 20.0, top: 15.0, right: 10.0, bottom: 15.0)
               : EdgeInsets.only(
-              left: 10.0, top: 15.0, right: 10.0, bottom: 15.0),
+                  left: 10.0, top: 15.0, right: 10.0, bottom: 15.0),
           child: Container(
             decoration: BoxDecoration(
                 border: Border.all(width: 2.0, color: Colors.white),
@@ -73,15 +71,12 @@ class _TabViewerAppBarState extends State<TabViewerAppBar> {
             child: Container(
                 child: Center(
                     child: Text(
-                      browserModel
-                          .webViewTabs
-                          .length
-                          .toString(),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.0),
-                    ))),
+              browserModel.webViewTabs.length.toString(),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.0),
+            ))),
           ),
         ),
       ),
@@ -219,8 +214,7 @@ class _TabViewerAppBarState extends State<TabViewerAppBar> {
 
     browserModel.addTab(WebViewTab(
       key: GlobalKey(),
-      webViewModel:
-      WebViewModel(url: url, isIncognitoMode: true),
+      webViewModel: WebViewModel(url: url, isIncognitoMode: true),
     ));
   }
 
@@ -236,5 +230,4 @@ class _TabViewerAppBarState extends State<TabViewerAppBar> {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => SettingsPage()));
   }
-
 }

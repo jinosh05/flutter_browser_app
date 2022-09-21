@@ -1,9 +1,7 @@
 import 'dart:io';
 
 // import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_browser/app_bar/url_info_popup.dart';
 import 'package:flutter_browser/custom_image.dart';
@@ -16,12 +14,12 @@ import 'package:flutter_browser/pages/developers/main.dart';
 import 'package:flutter_browser/pages/settings/main.dart';
 import 'package:flutter_browser/tab_popup_menu_actions.dart';
 import 'package:flutter_browser/util.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_icons_null_safety/flutter_icons_null_safety.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../animated_flutter_browser_logo.dart';
 import '../custom_popup_dialog.dart';
@@ -62,11 +60,15 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
     super.initState();
     _focusNode = FocusNode();
     _focusNode?.addListener(() async {
-      if (_focusNode != null && !_focusNode!.hasFocus && _searchController != null && _searchController!.text.isEmpty) {
-        var browserModel = Provider.of<BrowserModel>(context, listen: true);
+      if (_focusNode != null &&
+          !_focusNode!.hasFocus &&
+          _searchController != null &&
+          _searchController!.text.isEmpty) {
+        var browserModel = Provider.of<BrowserModel>(context, listen: false);
         var webViewModel = browserModel.getCurrentTab()?.webViewModel;
         var _webViewController = webViewModel?.webViewController;
-        _searchController!.text = (await _webViewController?.getUrl())?.toString() ?? "";
+        _searchController!.text =
+            (await _webViewController?.getUrl())?.toString() ?? "";
       }
     });
   }
@@ -158,7 +160,8 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
           TextField(
             onSubmitted: (value) {
               var url = Uri.parse(value.trim());
-              if (!url.scheme.startsWith("http") && !Util.isLocalizedContent(url)) {
+              if (!url.scheme.startsWith("http") &&
+                  !Util.isLocalizedContent(url)) {
                 url = Uri.parse(settings.searchEngine.searchUrl + value);
               }
 
@@ -195,7 +198,8 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
                 if (webViewModel.isIncognitoMode) {
                   icon = FlutterIcons.incognito_mco;
                 } else if (isSecure) {
-                  if (webViewModel.url != null && webViewModel.url!.scheme == "file") {
+                  if (webViewModel.url != null &&
+                      webViewModel.url!.scheme == "file") {
                     icon = Icons.offline_pin;
                   } else {
                     icon = Icons.lock;
@@ -230,7 +234,8 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
       InkWell(
         key: tabInkWellKey,
         onLongPress: () {
-          final RenderBox? box = tabInkWellKey.currentContext!.findRenderObject() as RenderBox?;
+          final RenderBox? box =
+              tabInkWellKey.currentContext!.findRenderObject() as RenderBox?;
           if (box == null) {
             return;
           }
@@ -289,21 +294,26 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
             var webViewController = webViewModel?.webViewController;
             var widgetsBingind = WidgetsBinding.instance;
 
-            if(widgetsBingind != null && widgetsBingind.window.viewInsets.bottom > 0.0) {
+            if (widgetsBingind.window.viewInsets.bottom > 0.0) {
               SystemChannels.textInput.invokeMethod('TextInput.hide');
               if (FocusManager.instance.primaryFocus != null)
                 FocusManager.instance.primaryFocus!.unfocus();
               if (webViewController != null) {
-                await webViewController.evaluateJavascript(source: "document.activeElement.blur();");
+                await webViewController.evaluateJavascript(
+                    source: "document.activeElement.blur();");
               }
               await Future.delayed(Duration(milliseconds: 300));
             }
-            
+
             if (webViewModel != null && webViewController != null) {
-              webViewModel.screenshot = await webViewController.takeScreenshot(screenshotConfiguration: ScreenshotConfiguration(
-                  compressFormat: CompressFormat.JPEG,
-                  quality: 20
-              )).timeout(Duration(milliseconds: 1500), onTimeout: () => null,);
+              webViewModel.screenshot = await webViewController
+                  .takeScreenshot(
+                      screenshotConfiguration: ScreenshotConfiguration(
+                          compressFormat: CompressFormat.JPEG, quality: 20))
+                  .timeout(
+                    Duration(milliseconds: 1500),
+                    onTimeout: () => null,
+                  );
             }
 
             browserModel.showTabScroller = true;
@@ -419,7 +429,6 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
                               Navigator.pop(popupMenuContext);
                               if (webViewModel.url != null &&
                                   webViewModel.url!.scheme.startsWith("http")) {
-
                                 var url = webViewModel.url;
                                 if (url == null) {
                                   return;
@@ -431,12 +440,17 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
                                     "-" +
                                     url.host +
                                     url.path.replaceAll("/", "-") +
-                                    DateTime.now().microsecondsSinceEpoch.toString()
-                                    + "." +
-                                    (Platform.isAndroid ? WebArchiveFormat.MHT.toValue() : WebArchiveFormat.WEBARCHIVE.toValue());
+                                    DateTime.now()
+                                        .microsecondsSinceEpoch
+                                        .toString() +
+                                    "." +
+                                    (Platform.isAndroid
+                                        ? WebArchiveFormat.MHT.toValue()
+                                        : WebArchiveFormat.WEBARCHIVE
+                                            .toValue());
 
-                                String? savedPath = (await _webViewController
-                                    ?.saveWebArchive(
+                                String? savedPath =
+                                    (await _webViewController?.saveWebArchive(
                                         filePath: webArchivePath,
                                         autoname: false));
 
@@ -450,13 +464,15 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
                                 if (savedPath != null) {
                                   browserModel.addWebArchive(
                                       url.toString(), webArchiveModel);
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
                                     content: Text(
                                         "${webViewModel.url} saved offline!"),
                                   ));
                                   browserModel.save();
                                 } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
                                     content: Text("Unable to save!"),
                                   ));
                                 }
@@ -785,7 +801,7 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
                   width: double.maxFinite,
                   child: ListView(
                     children: browserModel.favorites.map((favorite) {
-                      var url = favorite.url;
+                      var url = favorite!.url;
                       var faviconUrl = favorite.favicon != null
                           ? favorite.favicon!.url
                           : Uri.parse((url?.origin ?? "") + "/favicon.ico");
@@ -800,11 +816,17 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
                             //   imageUrl: faviconUrl,
                             //   height: 30,
                             // )
-                            CustomImage(url: faviconUrl, maxWidth: 30.0 , height: 30.0,)
+                            CustomImage(
+                              url: faviconUrl,
+                              maxWidth: 30.0,
+                              height: 30.0,
+                            )
                           ],
                         ),
-                        title: Text(favorite.title ?? favorite.url?.toString() ?? "",
-                            maxLines: 2, overflow: TextOverflow.ellipsis),
+                        title: Text(
+                            favorite.title ?? favorite.url?.toString() ?? "",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis),
                         subtitle: Text(favorite.url?.toString() ?? "",
                             maxLines: 2, overflow: TextOverflow.ellipsis),
                         isThreeLine: true,
@@ -857,33 +879,40 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
                       width: double.maxFinite,
                       child: ListView(
                         children: history.list?.reversed.map((historyItem) {
-                          var url = historyItem.url;
+                              var url = historyItem.url;
 
-                          return ListTile(
-                            leading: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                // CachedNetworkImage(
-                                //   placeholder: (context, url) =>
-                                //       CircularProgressIndicator(),
-                                //   imageUrl: (url?.origin ?? "") + "/favicon.ico",
-                                //   height: 30,
-                                // )
-                                CustomImage(url: Uri.parse((url?.origin ?? "") + "/favicon.ico"), maxWidth: 30.0, height: 30.0)
-                              ],
-                            ),
-                            title: Text(historyItem.title ?? url.toString(),
-                                maxLines: 2, overflow: TextOverflow.ellipsis),
-                            subtitle: Text(url?.toString() ?? "",
-                                maxLines: 2, overflow: TextOverflow.ellipsis),
-                            isThreeLine: true,
-                            onTap: () {
-                              webViewModel.webViewController
-                                  ?.goTo(historyItem: historyItem);
-                              Navigator.pop(context);
-                            },
-                          );
-                        }).toList() ?? <Widget>[],
+                              return ListTile(
+                                leading: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    // CachedNetworkImage(
+                                    //   placeholder: (context, url) =>
+                                    //       CircularProgressIndicator(),
+                                    //   imageUrl: (url?.origin ?? "") + "/favicon.ico",
+                                    //   height: 30,
+                                    // )
+                                    CustomImage(
+                                        url: Uri.parse((url?.origin ?? "") +
+                                            "/favicon.ico"),
+                                        maxWidth: 30.0,
+                                        height: 30.0)
+                                  ],
+                                ),
+                                title: Text(historyItem.title ?? url.toString(),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis),
+                                subtitle: Text(url?.toString() ?? "",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis),
+                                isThreeLine: true,
+                                onTap: () {
+                                  webViewModel.webViewController
+                                      ?.goTo(historyItem: historyItem);
+                                  Navigator.pop(context);
+                                },
+                              );
+                            }).toList() ??
+                            <Widget>[],
                       ));
                 },
               ));
@@ -913,7 +942,10 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
                   //   imageUrl: (url?.origin ?? "") + "/favicon.ico",
                   //   height: 30,
                   // )
-                  CustomImage(url: Uri.parse((url?.origin ?? "") + "/favicon.ico"), maxWidth: 30.0, height: 30.0)
+                  CustomImage(
+                      url: Uri.parse((url?.origin ?? "") + "/favicon.ico"),
+                      maxWidth: 30.0,
+                      height: 30.0)
                 ],
               ),
               title: Text(webArchive.title ?? url?.toString() ?? "",
@@ -933,11 +965,11 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
               onTap: () {
                 if (path != null) {
                   var browserModel =
-                  Provider.of<BrowserModel>(context, listen: false);
+                      Provider.of<BrowserModel>(context, listen: false);
                   browserModel.addTab(WebViewTab(
                     key: GlobalKey(),
-                    webViewModel: WebViewModel(url: Uri.parse("file://" +
-                        path)),
+                    webViewModel:
+                        WebViewModel(url: Uri.parse("file://" + path)),
                   ));
                 }
                 Navigator.pop(context);

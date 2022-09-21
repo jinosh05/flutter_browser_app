@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_browser/models/browser_model.dart';
 import 'package:flutter_browser/models/webview_model.dart';
@@ -40,8 +39,8 @@ void main() async {
   }
 
   await FlutterDownloader.initialize(
-    debug: true // optional: set false to disable printing logs to console
-  );
+      debug: true // optional: set false to disable printing logs to console
+      );
 
   await Permission.camera.request();
   await Permission.microphone.request();
@@ -58,7 +57,7 @@ void main() async {
             browserModel!.setCurrentWebViewModel(webViewModel);
             return browserModel;
           },
-          create: (BuildContext context) => BrowserModel(null),
+          create: (BuildContext context) => BrowserModel(WebViewModel()),
         ),
       ],
       child: FlutterBrowserApp(),

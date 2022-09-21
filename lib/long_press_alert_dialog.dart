@@ -9,7 +9,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'models/browser_model.dart';
 import 'models/webview_model.dart';
@@ -21,7 +21,11 @@ class LongPressAlertDialog extends StatefulWidget {
     InAppWebViewHitTestResultType.IMAGE_TYPE
   ];
 
-  LongPressAlertDialog({Key? key, required this.webViewModel, required this.hitTestResult, this.requestFocusNodeHrefResult})
+  LongPressAlertDialog(
+      {Key? key,
+      required this.webViewModel,
+      required this.hitTestResult,
+      this.requestFocusNodeHrefResult})
       : super(key: key);
 
   final WebViewModel webViewModel;
@@ -55,11 +59,12 @@ class _LongPressAlertDialogState extends State<LongPressAlertDialog> {
     if (widget.hitTestResult.type ==
             InAppWebViewHitTestResultType.SRC_ANCHOR_TYPE ||
         widget.hitTestResult.type ==
-            InAppWebViewHitTestResultType.SRC_IMAGE_ANCHOR_TYPE || (
-        widget.hitTestResult.type ==
-            InAppWebViewHitTestResultType.IMAGE_TYPE && widget.requestFocusNodeHrefResult != null
-            && widget.requestFocusNodeHrefResult!.url != null && widget.requestFocusNodeHrefResult!.url.toString().isNotEmpty
-    )) {
+            InAppWebViewHitTestResultType.SRC_IMAGE_ANCHOR_TYPE ||
+        (widget.hitTestResult.type ==
+                InAppWebViewHitTestResultType.IMAGE_TYPE &&
+            widget.requestFocusNodeHrefResult != null &&
+            widget.requestFocusNodeHrefResult!.url != null &&
+            widget.requestFocusNodeHrefResult!.url.toString().isNotEmpty)) {
       return <Widget>[
         _buildLinkTile(),
         Divider(),
@@ -86,7 +91,8 @@ class _LongPressAlertDialogState extends State<LongPressAlertDialog> {
   }
 
   Widget _buildLinkTile() {
-    var url = widget.requestFocusNodeHrefResult?.url ?? Uri.parse("about:blank");
+    var url =
+        widget.requestFocusNodeHrefResult?.url ?? Uri.parse("about:blank");
     var faviconUrl = Uri.parse(url.origin + "/favicon.ico");
 
     var title = widget.requestFocusNodeHrefResult?.title ?? "";
@@ -103,10 +109,20 @@ class _LongPressAlertDialogState extends State<LongPressAlertDialog> {
           //   imageUrl: widget.requestFocusNodeHrefResult?.src != null ? widget.requestFocusNodeHrefResult!.src : faviconUrl,
           //   height: 30,
           // )
-          CustomImage(url: widget.requestFocusNodeHrefResult?.src != null ? Uri.parse(widget.requestFocusNodeHrefResult!.src!) : faviconUrl, maxWidth: 30.0, height: 30.0,)
+          CustomImage(
+            url: widget.requestFocusNodeHrefResult?.src != null
+                ? Uri.parse(widget.requestFocusNodeHrefResult!.src!)
+                : faviconUrl,
+            maxWidth: 30.0,
+            height: 30.0,
+          )
         ],
       ),
-      title: Text(title, maxLines: 2, overflow: TextOverflow.ellipsis,),
+      title: Text(
+        title,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
       subtitle: Text(
         widget.requestFocusNodeHrefResult?.url?.toString() ?? "",
         maxLines: 2,
@@ -137,16 +153,14 @@ class _LongPressAlertDialogState extends State<LongPressAlertDialog> {
                   () => new EagerGestureRecognizer(),
                 ),
               ].toSet(),
-              initialUrlRequest: URLRequest(
-                url: widget.requestFocusNodeHrefResult?.url
-              ),
+              initialUrlRequest:
+                  URLRequest(url: widget.requestFocusNodeHrefResult?.url),
               initialOptions: InAppWebViewGroupOptions(
-                android: AndroidInAppWebViewOptions(
-                  useHybridComposition: true,
-                  verticalScrollbarThumbColor: Color.fromRGBO(0, 0, 0, 0.5),
-                  horizontalScrollbarThumbColor: Color.fromRGBO(0, 0, 0, 0.5)
-                )
-              ),
+                  android: AndroidInAppWebViewOptions(
+                      useHybridComposition: true,
+                      verticalScrollbarThumbColor: Color.fromRGBO(0, 0, 0, 0.5),
+                      horizontalScrollbarThumbColor:
+                          Color.fromRGBO(0, 0, 0, 0.5))),
               onProgressChanged: (controller, progress) {
                 if (progress > 50) {
                   setState(() {
@@ -169,7 +183,8 @@ class _LongPressAlertDialogState extends State<LongPressAlertDialog> {
       onTap: () {
         browserModel.addTab(WebViewTab(
           key: GlobalKey(),
-          webViewModel: WebViewModel(url: widget.requestFocusNodeHrefResult?.url),
+          webViewModel:
+              WebViewModel(url: widget.requestFocusNodeHrefResult?.url),
         ));
         Navigator.pop(context);
       },
@@ -185,7 +200,8 @@ class _LongPressAlertDialogState extends State<LongPressAlertDialog> {
         browserModel.addTab(WebViewTab(
           key: GlobalKey(),
           webViewModel: WebViewModel(
-              url: widget.requestFocusNodeHrefResult?.url, isIncognitoMode: true),
+              url: widget.requestFocusNodeHrefResult?.url,
+              isIncognitoMode: true),
         ));
         Navigator.pop(context);
       },
@@ -236,7 +252,10 @@ class _LongPressAlertDialogState extends State<LongPressAlertDialog> {
           //   imageUrl: widget.hitTestResult.extra,
           //   height: 50,
           // ),
-          CustomImage(url: Uri.parse(widget.hitTestResult.extra!), maxWidth: 50.0, height: 50.0)
+          CustomImage(
+              url: Uri.parse(widget.hitTestResult.extra!),
+              maxWidth: 50.0,
+              height: 50.0)
         ],
       ),
       title: Text(widget.webViewModel.title ?? ""),
@@ -253,9 +272,9 @@ class _LongPressAlertDialogState extends State<LongPressAlertDialog> {
           String fileName = path.substring(path.lastIndexOf('/') + 1);
 
           final taskId = await FlutterDownloader.enqueue(
-            url: widget.hitTestResult.extra,
+            url: widget.hitTestResult.extra!,
             fileName: fileName,
-            savedDir: (await getExternalStorageDirectory()).path,
+            savedDir: (await getExternalStorageDirectory())!.path,
             showNotification: true,
             openFileFromNotification: true,
           );
@@ -295,7 +314,8 @@ class _LongPressAlertDialogState extends State<LongPressAlertDialog> {
       onTap: () {
         browserModel.addTab(WebViewTab(
           key: GlobalKey(),
-          webViewModel: WebViewModel(url: Uri.parse(widget.hitTestResult.extra ?? "about:blank")),
+          webViewModel: WebViewModel(
+              url: Uri.parse(widget.hitTestResult.extra ?? "about:blank")),
         ));
         Navigator.pop(context);
       },

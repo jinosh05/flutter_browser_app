@@ -117,7 +117,7 @@ class _StorageManagerState extends State<StorageManager> {
               return Container();
             }
 
-            List<Cookie> cookies = (snapshot.data as List<Cookie>?) ?? <Cookie>[];
+            List<Cookie> cookies = snapshot.data ?? <Cookie>[];
 
             var rows = <DataRow>[];
             if (cookieValueTrackingEdit.length != cookies.length) {
@@ -331,11 +331,13 @@ class _StorageManagerState extends State<StorageManager> {
                         ),
                         Container(
                             width: MediaQuery.of(context).size.width,
-                            child: FlatButton(
-                              padding: EdgeInsets.all(15.0),
+                            child: TextButton(
+                              // padding: EdgeInsets.all(15.0),
                               child: Text("Add Cookie"),
                               onPressed: () async {
-                                if (_newCookieFormKey.currentState != null && _newCookieFormKey.currentState!.validate()) {
+                                if (_newCookieFormKey.currentState != null &&
+                                    _newCookieFormKey.currentState!
+                                        .validate()) {
                                   final expiresDate =
                                       _newCookieExpiresDate != null
                                           ? _newCookieExpiresDate!
@@ -367,8 +369,8 @@ class _StorageManagerState extends State<StorageManager> {
                 Row(
                   children: <Widget>[
                     Expanded(
-                      child: FlatButton(
-                        padding: EdgeInsets.all(15.0),
+                      child: TextButton(
+                        // padding: EdgeInsets.all(15.0),
                         child: Text("Clear cookies"),
                         onPressed: () async {
                           await _cookieManager.deleteCookies(url: url);
@@ -377,8 +379,8 @@ class _StorageManagerState extends State<StorageManager> {
                       ),
                     ),
                     Expanded(
-                      child: FlatButton(
-                        padding: EdgeInsets.all(15.0),
+                      child: TextButton(
+                        // padding: EdgeInsets.all(15.0),
                         child: Text("Clear all"),
                         onPressed: () async {
                           await _cookieManager.deleteAllCookies();
@@ -408,7 +410,8 @@ class _StorageManagerState extends State<StorageManager> {
               return Container();
             }
 
-            List<WebStorageItem> webStorageItems = (snapshot.data as List<WebStorageItem>?) ?? <WebStorageItem>[];
+            List<WebStorageItem> webStorageItems =
+                snapshot.data ?? <WebStorageItem>[];
 
             var rows = <DataRow>[];
             if (localStorageValueTrackingEdit.length !=
@@ -425,7 +428,9 @@ class _StorageManagerState extends State<StorageManager> {
                 _buildDataCellEditable(
                     width: constraints.maxWidth / 3,
                     onFieldSubmitted: (newValue) async {
-                      var updateItemValue = await _webViewController?.webStorage.localStorage.getItem(key: webStorageItem.key!);
+                      var updateItemValue = await _webViewController
+                          ?.webStorage.localStorage
+                          .getItem(key: webStorageItem.key!);
                       await _webViewController?.webStorage.localStorage
                           .removeItem(key: webStorageItem.key!);
                       await _webViewController?.webStorage.localStorage
@@ -506,8 +511,8 @@ class _StorageManagerState extends State<StorageManager> {
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  child: FlatButton(
-                    padding: EdgeInsets.all(15.0),
+                  child: TextButton(
+                    // padding: EdgeInsets.all(15.0),
                     child: Text("Clear items"),
                     onPressed: () async {
                       await _webViewController?.webStorage.localStorage.clear();
@@ -535,7 +540,8 @@ class _StorageManagerState extends State<StorageManager> {
               return Container();
             }
 
-            List<WebStorageItem> webStorageItems = (snapshot.data as List<WebStorageItem>?) ?? <WebStorageItem>[];
+            List<WebStorageItem> webStorageItems =
+                snapshot.data ?? <WebStorageItem>[];
 
             var rows = <DataRow>[];
 
@@ -554,7 +560,9 @@ class _StorageManagerState extends State<StorageManager> {
                 _buildDataCellEditable(
                     width: constraints.maxWidth / 3,
                     onFieldSubmitted: (newValue) async {
-                      var updateItemValue = await _webViewController?.webStorage.sessionStorage.getItem(key: webStorageItem.key!);
+                      var updateItemValue = await _webViewController
+                          ?.webStorage.sessionStorage
+                          .getItem(key: webStorageItem.key!);
                       await _webViewController?.webStorage.sessionStorage
                           .removeItem(key: webStorageItem.key!);
                       await _webViewController?.webStorage.sessionStorage
@@ -636,8 +644,8 @@ class _StorageManagerState extends State<StorageManager> {
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  child: FlatButton(
-                    padding: EdgeInsets.all(15.0),
+                  child: TextButton(
+                    // padding: EdgeInsets.all(15.0),
                     child: Text("Clear items"),
                     onPressed: () async {
                       await _webViewController?.webStorage.sessionStorage
@@ -712,8 +720,9 @@ class _StorageManagerState extends State<StorageManager> {
       future: _webStorageManager.ios
           .fetchDataRecords(dataTypes: IOSWKWebsiteDataType.ALL),
       builder: (context, snapshot) {
-        List<IOSWKWebsiteDataRecord> dataRecords =
-            snapshot.hasData ? (snapshot.data as List<IOSWKWebsiteDataRecord>) : <IOSWKWebsiteDataRecord>[];
+        List<IOSWKWebsiteDataRecord> dataRecords = snapshot.hasData
+            ? (snapshot.data as List<IOSWKWebsiteDataRecord>)
+            : <IOSWKWebsiteDataRecord>[];
 
         var rows = <DataRow>[];
 
@@ -806,8 +815,8 @@ class _StorageManagerState extends State<StorageManager> {
             ),
             Container(
                 width: MediaQuery.of(context).size.width,
-                child: FlatButton(
-                  padding: EdgeInsets.all(15.0),
+                child: TextButton(
+                  // padding: EdgeInsets.all(15.0),
                   child: Text("Clear all"),
                   onPressed: () async {
                     await _webStorageManager.ios.removeDataModifiedSince(
@@ -832,7 +841,8 @@ class _StorageManagerState extends State<StorageManager> {
         }
 
         List<URLProtectionSpaceHttpAuthCredentials>
-            protectionSpaceHttpAuthCredentials = (snapshot.data as List<URLProtectionSpaceHttpAuthCredentials>?) ?? <URLProtectionSpaceHttpAuthCredentials>[];
+            protectionSpaceHttpAuthCredentials =
+            snapshot.data ?? <URLProtectionSpaceHttpAuthCredentials>[];
 
         var textStyle = TextStyle(fontSize: 16.0);
 
@@ -876,8 +886,8 @@ class _StorageManagerState extends State<StorageManager> {
                     if (protectionSpace != null) {
                       await _httpAuthCredentialDatabase
                           .removeHttpAuthCredential(
-                          protectionSpace: protectionSpace,
-                          credential: httpAuthCredential);
+                              protectionSpace: protectionSpace,
+                              credential: httpAuthCredential);
                     }
                     setState(() {});
                   },
@@ -888,10 +898,14 @@ class _StorageManagerState extends State<StorageManager> {
 
           dataTables.add(Column(
             children: <Widget>[
-              Text("Protection Space", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),),
-              SizedBox(height: 10.0,),
               Text(
-                  "Protocol: ${protectionSpace?.protocol ?? ""}, Host: ${protectionSpace?.host ?? ""}, " +
+                "Protection Space",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Text("Protocol: ${protectionSpace?.protocol ?? ""}, Host: ${protectionSpace?.host ?? ""}, " +
                   "Port: ${protectionSpace?.port != null && protectionSpace!.port! > 0 ? protectionSpace.port.toString() : ""}, " +
                   "Realm: ${protectionSpace?.realm ?? ""}"),
               Container(
@@ -930,14 +944,14 @@ class _StorageManagerState extends State<StorageManager> {
         var children = <Widget>[];
         children.addAll(dataTables);
         children.addAll(<Widget>[
-          FlatButton(
-              padding: EdgeInsets.all(15.0),
-              child: Text("Clear all"),
-              onPressed: () async {
-                await _httpAuthCredentialDatabase.clearAllAuthCredentials();
-                setState(() {});
-              },
-            ),
+          TextButton(
+            // padding: EdgeInsets.all(15.0),
+            child: Text("Clear all"),
+            onPressed: () async {
+              await _httpAuthCredentialDatabase.clearAllAuthCredentials();
+              setState(() {});
+            },
+          ),
         ]);
 
         return ExpansionTile(
@@ -956,10 +970,10 @@ class _StorageManagerState extends State<StorageManager> {
 
   DataCell _buildDataCellEditable(
       {required double width,
-        required int index,
-        required List<bool> trackingEditStatus,
-        String? initialValue,
-        Future<void> Function(String newValue)? onFieldSubmitted}) {
+      required int index,
+      required List<bool> trackingEditStatus,
+      String? initialValue,
+      Future<void> Function(String newValue)? onFieldSubmitted}) {
     return DataCell(
       Container(
           width: width,
@@ -977,7 +991,8 @@ class _StorageManagerState extends State<StorageManager> {
                       initialValue: initialValue,
                       autofocus: false,
                       onFieldSubmitted: (newValue) async {
-                        if (newValue != initialValue && onFieldSubmitted != null) {
+                        if (newValue != initialValue &&
+                            onFieldSubmitted != null) {
                           await onFieldSubmitted(newValue);
                         }
                         setState(() {
@@ -1037,8 +1052,8 @@ class _StorageManagerState extends State<StorageManager> {
             ),
           ),
           Container(
-              child: FlatButton(
-            padding: EdgeInsets.all(15.0),
+              child: TextButton(
+            // padding: EdgeInsets.all(15.0),
             child: Text("Add Item"),
             onPressed: () {
               if (formKey.currentState!.validate()) {

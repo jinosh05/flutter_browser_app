@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_browser/models/browser_model.dart';
 import 'package:flutter_browser/models/webview_model.dart';
 import 'package:flutter_browser/pages/settings/android_settings.dart';
 import 'package:flutter_browser/pages/settings/cross_platform_settings.dart';
 import 'package:flutter_browser/pages/settings/ios_settings.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_icons_null_safety/flutter_icons_null_safety.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:provider/provider.dart';
 
@@ -128,7 +127,8 @@ class _SettingsPageState extends State<SettingsPage> {
       case PopupSettingsMenuActions.RESET_WEBVIEW_SETTINGS:
         var browserModel = Provider.of<BrowserModel>(context, listen: false);
         var settings = browserModel.getSettings();
-        var currentWebViewModel = Provider.of<WebViewModel>(context, listen: false);
+        var currentWebViewModel =
+            Provider.of<WebViewModel>(context, listen: false);
         var _webViewController = currentWebViewModel.webViewController;
         await _webViewController?.setOptions(
             options: InAppWebViewGroupOptions(
@@ -142,7 +142,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     isFraudulentWebsiteWarningEnabled: true)));
         currentWebViewModel.options = await _webViewController?.getOptions();
         browserModel.save();
-        setState(() { });
+        setState(() {});
         break;
     }
   }

@@ -5,7 +5,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_browser/models/web_archive_model.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,29 +21,28 @@ class BrowserSettings {
   String customUrlHomePage;
   bool debuggingEnabled;
 
-  BrowserSettings({
-    this.searchEngine = GoogleSearchEngine,
-    this.homePageEnabled = false,
-    this.customUrlHomePage = "",
-    this.debuggingEnabled = false
-  });
+  BrowserSettings(
+      {this.searchEngine = GoogleSearchEngine,
+      this.homePageEnabled = false,
+      this.customUrlHomePage = "",
+      this.debuggingEnabled = false});
 
   BrowserSettings copy() {
     return BrowserSettings(
         searchEngine: searchEngine,
         homePageEnabled: homePageEnabled,
         customUrlHomePage: customUrlHomePage,
-        debuggingEnabled: debuggingEnabled
-    );
+        debuggingEnabled: debuggingEnabled);
   }
 
   static BrowserSettings? fromMap(Map<String, dynamic>? map) {
-    return map != null ? BrowserSettings(
-        searchEngine: SearchEngines[map["searchEngineIndex"]],
-        homePageEnabled: map["homePageEnabled"],
-        customUrlHomePage: map["customUrlHomePage"],
-        debuggingEnabled: map["debuggingEnabled"]
-    ) : null;
+    return map != null
+        ? BrowserSettings(
+            searchEngine: SearchEngines[map["searchEngineIndex"]],
+            homePageEnabled: map["homePageEnabled"],
+            customUrlHomePage: map["customUrlHomePage"],
+            debuggingEnabled: map["debuggingEnabled"])
+        : null;
   }
 
   Map<String, dynamic> toMap() {
@@ -67,7 +65,7 @@ class BrowserSettings {
 }
 
 class BrowserModel extends ChangeNotifier {
-  final List<FavoriteModel> _favorites = [];
+  final List<FavoriteModel?> _favorites = [];
   final List<WebViewTab> _webViewTabs = [];
   final Map<String, WebArchiveModel> _webArchives = {};
   int _currentTabIndex = -1;
@@ -85,14 +83,14 @@ class BrowserModel extends ChangeNotifier {
     }
   }
 
-  BrowserModel(currentWebViewModel) {
+  BrowserModel(WebViewModel currentWebViewModel) {
     this._currentWebViewModel = currentWebViewModel;
   }
 
   UnmodifiableListView<WebViewTab> get webViewTabs =>
       UnmodifiableListView(_webViewTabs);
 
-  UnmodifiableListView<FavoriteModel> get favorites =>
+  UnmodifiableListView<FavoriteModel?> get favorites =>
       UnmodifiableListView(_favorites);
 
   UnmodifiableMapView<String, WebArchiveModel> get webArchives =>
@@ -130,7 +128,8 @@ class BrowserModel extends ChangeNotifier {
     }
 
     if (_currentTabIndex >= 0) {
-      _currentWebViewModel.updateWithValue(_webViewTabs[_currentTabIndex].webViewModel);
+      _currentWebViewModel
+          .updateWithValue(_webViewTabs[_currentTabIndex].webViewModel);
     } else {
       _currentWebViewModel.updateWithValue(WebViewModel());
     }
@@ -141,7 +140,8 @@ class BrowserModel extends ChangeNotifier {
   void showTab(int index) {
     if (_currentTabIndex != index) {
       _currentTabIndex = index;
-      _currentWebViewModel.updateWithValue(_webViewTabs[_currentTabIndex].webViewModel);
+      _currentWebViewModel
+          .updateWithValue(_webViewTabs[_currentTabIndex].webViewModel);
 
       notifyListeners();
     }
@@ -164,7 +164,11 @@ class BrowserModel extends ChangeNotifier {
   }
 
   bool containsFavorite(FavoriteModel favorite) {
-    return _favorites.contains(favorite) || _favorites.map((e) => e as FavoriteModel?).firstWhere((element) => element!.url == favorite.url, orElse: () => null) != null;
+    return _favorites.contains(favorite) ||
+        _favorites.map((e) => e).firstWhere(
+                (element) => element!.url == favorite.url,
+                orElse: () => null) !=
+            null;
   }
 
   void addFavorite(FavoriteModel favorite) {
@@ -184,7 +188,9 @@ class BrowserModel extends ChangeNotifier {
 
   void removeFavorite(FavoriteModel favorite) {
     if (!_favorites.remove(favorite)) {
-      var favToRemove = _favorites.map((e) => e as FavoriteModel?).firstWhere((element) => element!.url == favorite.url, orElse: () => null);
+      var favToRemove = _favorites.map((e) => e).firstWhere(
+          (element) => element!.url == favorite.url,
+          orElse: () => null);
       if (favToRemove != null) {
         _favorites.remove(favToRemove);
       }
@@ -209,8 +215,8 @@ class BrowserModel extends ChangeNotifier {
       final webArchiveFile = File(path);
       try {
         webArchiveFile.deleteSync();
-      } catch (e) { }
-      finally {
+      } catch (e) {
+      } finally {
         _webArchives.remove(webArchive.url.toString());
       }
       notifyListeners();
@@ -224,8 +230,8 @@ class BrowserModel extends ChangeNotifier {
         final webArchiveFile = File(path);
         try {
           webArchiveFile.deleteSync();
-        } catch (e) {}
-        finally {
+        } catch (e) {
+        } finally {
           _webArchives.remove(key);
         }
       }
@@ -252,7 +258,8 @@ class BrowserModel extends ChangeNotifier {
   Future<void> save() async {
     _timerSave?.cancel();
 
-    if (DateTime.now().difference(_lastTrySave) >= Duration(milliseconds: 400)) {
+    if (DateTime.now().difference(_lastTrySave) >=
+        Duration(milliseconds: 400)) {
       _lastTrySave = DateTime.now();
       await flush();
     } else {
@@ -272,7 +279,7 @@ class BrowserModel extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> browserData;
     try {
-      browserData = await json.decode(prefs.getString("browser"));
+      browserData = await json.decode(prefs.getString("browser")!);
     } catch (e) {
       print(e);
       return;
@@ -282,41 +289,49 @@ class BrowserModel extends ChangeNotifier {
     this.closeAllTabs();
     this.clearWebArchives();
 
-    List<Map<String, dynamic>> favoritesList = browserData["favorites"]?.cast<Map<String, dynamic>>() ?? [];
-    List<FavoriteModel> favorites = favoritesList.map((e) => FavoriteModel.fromMap(e)!).toList();
+    List<Map<String, dynamic>> favoritesList =
+        browserData["favorites"]?.cast<Map<String, dynamic>>() ?? [];
+    List<FavoriteModel> favorites =
+        favoritesList.map((e) => FavoriteModel.fromMap(e)!).toList();
 
-    Map<String, dynamic> webArchivesMap = browserData["webArchives"]?.cast<String, dynamic>() ?? {};
-    Map<String, WebArchiveModel> webArchives = webArchivesMap.map((key, value) =>
-        MapEntry(key, WebArchiveModel.fromMap(value?.cast<String, dynamic>())!));
+    Map<String, dynamic> webArchivesMap =
+        browserData["webArchives"]?.cast<String, dynamic>() ?? {};
+    Map<String, WebArchiveModel> webArchives = webArchivesMap.map(
+        (key, value) => MapEntry(
+            key, WebArchiveModel.fromMap(value?.cast<String, dynamic>())!));
 
-    BrowserSettings settings = BrowserSettings.fromMap(browserData["settings"]?.cast<String, dynamic>()) ?? BrowserSettings();
-    List<Map<String, dynamic>> webViewTabList = browserData["webViewTabs"]?.cast<Map<String, dynamic>>() ?? [];
+    BrowserSettings settings = BrowserSettings.fromMap(
+            browserData["settings"]?.cast<String, dynamic>()) ??
+        BrowserSettings();
+    List<Map<String, dynamic>> webViewTabList =
+        browserData["webViewTabs"]?.cast<Map<String, dynamic>>() ?? [];
     List<WebViewTab> webViewTabs = webViewTabList
         .map((e) => WebViewTab(
-          key: GlobalKey(),
-          webViewModel: WebViewModel.fromMap(e)!,
-        ))
+              key: GlobalKey(),
+              webViewModel: WebViewModel.fromMap(e)!,
+            ))
         .toList();
-    webViewTabs.sort((a, b) => a.webViewModel.tabIndex!.compareTo(b.webViewModel.tabIndex!));
-
+    webViewTabs.sort(
+        (a, b) => a.webViewModel.tabIndex!.compareTo(b.webViewModel.tabIndex!));
 
     this.addFavorites(favorites);
     this.addWebArchives(webArchives);
     this.updateSettings(settings);
     this.addTabs(webViewTabs);
 
-    int currentTabIndex = browserData["currentTabIndex"] ?? this._currentTabIndex;
+    int currentTabIndex =
+        browserData["currentTabIndex"] ?? this._currentTabIndex;
     currentTabIndex = min(currentTabIndex, this._webViewTabs.length - 1);
 
-    if (currentTabIndex >= 0)
-      this.showTab(currentTabIndex);
+    if (currentTabIndex >= 0) this.showTab(currentTabIndex);
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "favorites": _favorites.map((e) => e.toMap()).toList(),
+      "favorites": _favorites.map((e) => e!.toMap()).toList(),
       "webViewTabs": _webViewTabs.map((e) => e.webViewModel.toMap()).toList(),
-      "webArchives": _webArchives.map((key, value) => MapEntry(key, value.toMap())),
+      "webArchives":
+          _webArchives.map((key, value) => MapEntry(key, value.toMap())),
       "currentTabIndex": _currentTabIndex,
       "settings": _settings.toMap(),
       "currentWebViewModel": _currentWebViewModel.toMap(),
