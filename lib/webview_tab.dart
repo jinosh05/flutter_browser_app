@@ -136,7 +136,7 @@ class WebViewTabState extends State<WebViewTab> with WidgetsBindingObserver {
     initialOptions.ios.isFraudulentWebsiteWarningEnabled = true;
     initialOptions.ios.disableLongPressContextMenuOnLinks = true;
     initialOptions.ios.allowingReadAccessTo =
-        Uri.parse('file://$WEB_ARCHIVE_DIR/');
+        Uri.parse('file://$webArchiveDir/');
 
     return InAppWebView(
       initialUrlRequest: URLRequest(url: widget.webViewModel.url),

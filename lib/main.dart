@@ -10,11 +10,11 @@ import 'package:provider/provider.dart';
 
 import 'browser.dart';
 
-late final WEB_ARCHIVE_DIR;
+late final webArchiveDir;
 
-late final TAB_VIEWER_BOTTOM_OFFSET_1;
-late final TAB_VIEWER_BOTTOM_OFFSET_2;
-late final TAB_VIEWER_BOTTOM_OFFSET_3;
+late final tabViewerBottomOffset;
+late final tabViewerBottomOffset2;
+late final tabViewerBottomOffset3;
 
 const TAB_VIEWER_TOP_OFFSET_1 = 0.0;
 const TAB_VIEWER_TOP_OFFSET_2 = 10.0;
@@ -26,16 +26,16 @@ const TAB_VIEWER_TOP_SCALE_BOTTOM_OFFSET = 230.0;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  WEB_ARCHIVE_DIR = (await getApplicationSupportDirectory()).path;
+  webArchiveDir = (await getApplicationSupportDirectory()).path;
 
   if (Platform.isIOS) {
-    TAB_VIEWER_BOTTOM_OFFSET_1 = 130.0;
-    TAB_VIEWER_BOTTOM_OFFSET_2 = 140.0;
-    TAB_VIEWER_BOTTOM_OFFSET_3 = 150.0;
+    tabViewerBottomOffset = 130.0;
+    tabViewerBottomOffset2 = 140.0;
+    tabViewerBottomOffset3 = 150.0;
   } else {
-    TAB_VIEWER_BOTTOM_OFFSET_1 = 110.0;
-    TAB_VIEWER_BOTTOM_OFFSET_2 = 120.0;
-    TAB_VIEWER_BOTTOM_OFFSET_3 = 130.0;
+    tabViewerBottomOffset = 110.0;
+    tabViewerBottomOffset2 = 120.0;
+    tabViewerBottomOffset3 = 130.0;
   }
 
   await FlutterDownloader.initialize(

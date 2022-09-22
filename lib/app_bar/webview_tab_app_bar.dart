@@ -434,7 +434,7 @@ class _WebViewTabAppBarState extends State<WebViewTabAppBar>
                                   return;
                                 }
 
-                                String webArchivePath = WEB_ARCHIVE_DIR +
+                                String webArchivePath = webArchiveDir +
                                     Platform.pathSeparator +
                                     url.scheme +
                                     "-" +
